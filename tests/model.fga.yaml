@@ -1,0 +1,46 @@
+name: Organization and Project Authorization
+
+model_file: ../model.fga
+
+tuples:
+  - user: user:niko
+    relation: member
+    object: organization:acme
+
+  - user: organization:acme
+    relation: organization
+    object: project:foo
+
+  - user: user:alice
+    relation: editor
+    object: project:foo
+
+tests:
+  - name: organization member can view project
+    check:
+      - user: user:niko
+        object: project:foo
+        assertions:
+          viewer: true
+
+  - name: unrelated user cannot view project
+    check:
+      - user: user:bob
+        object: project:foo
+        assertions:
+          viewer: false
+
+  - name: editor can edit project
+    check:
+      - user: user:alice
+        object: project:foo
+        assertions:
+          editor: true
+          viewer: false
+
+  - name: member cannot edit project
+    check:
+      - user: user:niko
+        object: project:foo
+        assertions:
+          editor: false

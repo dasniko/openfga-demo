@@ -1,0 +1,11 @@
+- user: user:niko
+  relation: member
+  object: organization:acme
+
+- user: organization:acme
+  relation: organization
+  object: project:foo
+
+- user: user:alice
+  relation: editor
+  object: project:foo

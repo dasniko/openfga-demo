@@ -1,0 +1,15 @@
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define member: [user]
+    define admin: [user]
+
+type project
+  relations
+    define organization: [organization]
+    define viewer: member from organization #or editor
+    define editor: [user]
