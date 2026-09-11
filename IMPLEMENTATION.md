@@ -43,7 +43,7 @@ has a separate `openfga-language` artifact; .NET has no parser at all. The porta
 is the CLI:
 
 ```bash
-fga model transform --input model.fga --output model.json
+fga model transform --file model.fga > model.json
 ```
 
 ---
