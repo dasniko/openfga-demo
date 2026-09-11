@@ -1,6 +1,7 @@
 # OpenFGA Demo
 
-Application integration (Java, JavaScript, .NET): [IMPLEMENTATION.md](IMPLEMENTATION.md)
+- [VISUALIZATION.md](VISUALIZATION.md) — model diagrams and the effective access matrix
+- [IMPLEMENTATION.md](IMPLEMENTATION.md) — SDK integration for Java, JavaScript and .NET
 
 ## Local tests
 

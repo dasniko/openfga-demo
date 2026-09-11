@@ -13,6 +13,7 @@ Local server via `docker-compose.yml` (OpenFGA + Postgres 18, HTTP on `:8080`, g
 | `docker-compose.yml` | Local OpenFGA + Postgres |
 | `README.md` | CLI walkthrough (create store, write model, write tuples, query) |
 | `IMPLEMENTATION.md` | SDK integration guide — Java, JavaScript/TypeScript, .NET |
+| `VISUALIZATION.md` | Mermaid diagrams of the type/relation graph and the access matrix |
 
 ## Commands
 
