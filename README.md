@@ -1,5 +1,7 @@
 # OpenFGA Demo
 
+Application integration (Java, JavaScript, .NET): [IMPLEMENTATION.md](IMPLEMENTATION.md)
+
 ## Local tests
 
     fga model test --tests tests/model.fga.yaml
@@ -40,5 +42,5 @@ immutable and versioned
         --store-id=$FGA_STORE_ID \
         --model-id=$FGA_MODEL_ID \
         user:niko \
-        viewer \
+        can_view \
         project:foo
