@@ -1,3 +1,7 @@
+- user: user:carol
+  relation: admin
+  object: organization:acme
+
 - user: user:niko
   relation: member
   object: organization:acme

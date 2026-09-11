@@ -5,11 +5,17 @@ type user
 
 type organization
   relations
-    define member: [user]
     define admin: [user]
+    define member: [user] or admin
+
+    define can_create_project: admin
 
 type project
   relations
     define organization: [organization]
-    define viewer: member from organization #or editor
-    define editor: [user]
+
+    define editor: [user] or admin from organization
+    define viewer: [user] or editor or member from organization
+
+    define can_edit: editor
+    define can_view: viewer

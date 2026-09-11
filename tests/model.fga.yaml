@@ -1,46 +1,113 @@
 name: Organization and Project Authorization
 
 model_file: ../model.fga
-
-tuples:
-  - user: user:niko
-    relation: member
-    object: organization:acme
-
-  - user: organization:acme
-    relation: organization
-    object: project:foo
-
-  - user: user:alice
-    relation: editor
-    object: project:foo
+tuple_file: ../tuples/development.yaml
 
 tests:
-  - name: organization member can view project
+  - name: organization member can view but not edit a project
     check:
       - user: user:niko
         object: project:foo
         assertions:
-          viewer: true
+          can_view: true
+          can_edit: false
 
-  - name: unrelated user cannot view project
+  - name: organization admin can view and edit a project
     check:
-      - user: user:bob
+      - user: user:carol
         object: project:foo
         assertions:
-          viewer: false
+          can_view: true
+          can_edit: true
 
-  - name: editor can edit project
+  - name: project editor can edit and therefore also view
     check:
       - user: user:alice
         object: project:foo
         assertions:
-          editor: true
-          viewer: false
+          can_edit: true
+          can_view: true
 
-  - name: member cannot edit project
+  - name: unrelated user has no access
     check:
-      - user: user:niko
+      - user: user:bob
         object: project:foo
         assertions:
-          editor: false
+          can_view: false
+          can_edit: false
+
+  - name: only organization admins can create projects
+    check:
+      - user: user:carol
+        object: organization:acme
+        assertions:
+          can_create_project: true
+      - user: user:niko
+        object: organization:acme
+        assertions:
+          can_create_project: false
+      - user: user:bob
+        object: organization:acme
+        assertions:
+          can_create_project: false
+
+  - name: admins are implicitly members
+    check:
+      - user: user:carol
+        object: organization:acme
+        assertions:
+          member: true
+      - user: user:niko
+        object: organization:acme
+        assertions:
+          member: true
+          admin: false
+
+  - name: projects visible and editable per user
+    list_objects:
+      - user: user:carol
+        type: project
+        assertions:
+          can_view:
+            - project:foo
+          can_edit:
+            - project:foo
+      - user: user:niko
+        type: project
+        assertions:
+          can_view:
+            - project:foo
+          can_edit: []
+      - user: user:bob
+        type: project
+        assertions:
+          can_view: []
+          can_edit: []
+
+  - name: organizations a user may create projects in
+    list_objects:
+      - user: user:carol
+        type: organization
+        assertions:
+          can_create_project:
+            - organization:acme
+      - user: user:niko
+        type: organization
+        assertions:
+          can_create_project: []
+
+  - name: who can view and edit the project
+    list_users:
+      - object: project:foo
+        user_filter:
+          - type: user
+        assertions:
+          can_view:
+            users:
+              - user:alice
+              - user:carol
+              - user:niko
+          can_edit:
+            users:
+              - user:alice
+              - user:carol
