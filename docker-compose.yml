@@ -36,6 +36,8 @@ services:
       OPENFGA_DATASTORE_ENGINE: postgres
       OPENFGA_DATASTORE_URI: postgres://postgres:password@postgres:5432/postgres?sslmode=disable
       OPENFGA_DATASTORE_MAX_OPEN_CONNS: "100" #see postgres container
+      OPENFGA_EXPERIMENTALS: authzen
+      OPENFGA_AUTHZEN_BASE_URL: http://localhost:8080
     ports:
       - "8080:8080" #http
       - "8081:8081" #grpc
