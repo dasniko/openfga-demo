@@ -7,11 +7,11 @@ services:
     image: postgres:18-alpine
     container_name: fga_postgres
     command: postgres -c 'max_connections=100'
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
     volumes:
       - fga-data:/var/lib/postgresql
     healthcheck:
@@ -21,20 +21,17 @@ services:
       retries: 5
 
   migrate:
-    depends_on:
-      postgres:
-        condition: service_healthy
     image: openfga/openfga:latest
     container_name: fga_migrate
+    command: migrate
     environment:
       OPENFGA_DATASTORE_ENGINE: postgres
       OPENFGA_DATASTORE_URI: postgres://postgres:password@postgres:5432/postgres?sslmode=disable
-    command: migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   openfga:
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
     image: openfga/openfga:latest
     container_name: fga_openfga
     command: run
@@ -48,6 +45,9 @@ services:
       - "8080:8080" #http
       - "8081:8081" #grpc
       - "2112:2112" #prometheus metrics
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test:
         [ "CMD", "/usr/local/bin/grpc_health_probe", "-addr=openfga:8081" ]
