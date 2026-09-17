@@ -6,8 +6,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -21,8 +21,8 @@ services:
     image: openfga/openfga:latest
     container_name: fga_migrate
     environment:
-      - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+      OPENFGA_DATASTORE_ENGINE: postgres
+      OPENFGA_DATASTORE_URI: postgres://postgres:password@postgres:5432/postgres?sslmode=disable
     command: migrate
 
   openfga:
@@ -33,20 +33,16 @@ services:
     container_name: fga_openfga
     command: run
     environment:
-      - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
-      - OPENFGA_DATASTORE_MAX_OPEN_CONNS=100 #see postgres container
+      OPENFGA_DATASTORE_ENGINE: postgres
+      OPENFGA_DATASTORE_URI: postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+      OPENFGA_DATASTORE_MAX_OPEN_CONNS: "100" #see postgres container
     ports:
       - "8080:8080" #http
       - "8081:8081" #grpc
       - "2112:2112" #prometheus metrics
     healthcheck:
       test:
-        [
-          "CMD",
-          "/usr/local/bin/grpc_health_probe",
-          "-addr=openfga:8081"
-        ]
+        [ "CMD", "/usr/local/bin/grpc_health_probe", "-addr=openfga:8081" ]
       interval: 5s
       timeout: 30s
       retries: 3
