@@ -11,9 +11,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - fga-data:/var/lib/postgresql
+    networks:
+      - demo
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -27,6 +29,8 @@ services:
     environment:
       OPENFGA_DATASTORE_ENGINE: postgres
       OPENFGA_DATASTORE_URI: postgres://postgres:password@postgres:5432/postgres?sslmode=disable
+    networks:
+      - demo
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,11 +44,19 @@ services:
       OPENFGA_DATASTORE_URI: postgres://postgres:password@postgres:5432/postgres?sslmode=disable
       OPENFGA_DATASTORE_MAX_OPEN_CONNS: "100" #see postgres container
       OPENFGA_EXPERIMENTALS: authzen
-      OPENFGA_AUTHZEN_BASE_URL: http://localhost:8080
+      OPENFGA_AUTHZEN_BASE_URL: http://localhost:8280
+      #OPENFGA_AUTHN_METHOD: preshared
+      #OPENFGA_AUTHN_PRESHARED_KEYS: key1,key2
+      #OPENFGA_AUTHN_METHOD: oidc
+      #OPENFGA_AUTHN_OIDC_ISSUER: http://keycloak:8080/realms/demo
+      #OPENFGA_AUTHN_OIDC_ISSUER_ALIASES: http://localhost:8080/realms/demo
+      #OPENFGA_AUTHN_OIDC_AUDIENCE: openfga
     ports:
-      - "8080:8080" #http
-      - "8081:8081" #grpc
-      - "2112:2112" #prometheus metrics
+      - "8280:8080" #http
+      - "8281:8081" #grpc
+      - "2212:2112" #prometheus metrics
+    networks:
+      - demo
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -54,3 +66,7 @@ services:
       interval: 5s
       timeout: 30s
       retries: 3
+
+networks:
+  demo:
+    external: true
